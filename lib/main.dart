@@ -30,6 +30,9 @@ class _MiniFormPageState extends State<MiniFormPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
 
+  String submittedName = '';
+  String submittedMessage = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,10 +83,10 @@ class _MiniFormPageState extends State<MiniFormPage> {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // Form is valid (no preview logic)
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Form submitted')),
-                        );
+                        setState(() {
+                          submittedName = nameController.text;
+                          submittedMessage = messageController.text;
+                        });
                       }
                     },
                     child: const Text('Submit'),
@@ -91,6 +94,33 @@ class _MiniFormPageState extends State<MiniFormPage> {
                 ],
               ),
             ),
+
+            const SizedBox(height: 24),
+
+            // Preview Area (shows only after submit)
+            if (submittedName.isNotEmpty && submittedMessage.isNotEmpty)
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Preview',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text('Name: $submittedName'),
+                      const SizedBox(height: 4),
+                      Text('Message: $submittedMessage'),
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),
